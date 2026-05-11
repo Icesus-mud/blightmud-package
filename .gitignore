@@ -2,3 +2,7 @@
 *.bak
 *.orig
 .DS_Store
+
+# Local overrides (credentials, personal aliases). Loaded by config.lua
+# if present. Never committed.
+/local.lua

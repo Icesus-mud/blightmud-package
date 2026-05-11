@@ -6,10 +6,23 @@ local session = {
   port = tonumber(store.session_read('cur_port') or '0'),
 }
 
+-- Load an optional local override file (e.g. credentials, personal
+-- aliases) if the player has dropped one in. Sibling to this file,
+-- gitignored so it never reaches the public package repo.
+local function load_local_overrides()
+  local path = blight.config_dir() .. '/local.lua'
+  local f = io.open(path, 'r')
+  if f then
+    f:close()
+    script.load(path)
+  end
+end
+
 local function load_profile()
   if session.host == 'icesus.org' then
     script.load(blight.config_dir() .. '/icesus/init.lua')
   end
+  load_local_overrides()
 end
 
 local function reload_all()
