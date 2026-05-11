@@ -1,0 +1,16 @@
+{
+    "scroll_split": true,
+    "last_command": false,
+    "command_search": true,
+    "smart_history": true,
+    "hide_topbar": false,
+    "reader_mode": false,
+    "confirm_quit": true,
+    "mouse_enabled": false,
+    "save_history": false,
+    "logging_enabled": true,
+    "tts_enabled": false,
+    "keepalive_enabled": true,
+    "scroll_lock": true,
+    "echo_input": true,
+}
