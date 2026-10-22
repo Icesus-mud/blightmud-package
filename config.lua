@@ -1,41 +1,27 @@
 -- Blightmud configuration script
 package.path = blight.config_dir() .. '/?.lua;' .. blight.config_dir() .. '/?/init.lua;' .. package.path
 
--- Bootstrap RON files into Blightmud's data dir on first run.
--- Blightmud 5.x reads servers.ron and settings.ron from
--- ~/.local/share/blightmud/data/ (XDG_DATA_HOME), but this package
--- keeps the editable copies alongside config.lua so they live in git.
--- Symlink them across so /connect <Server> just works after install,
--- without forcing every player to remember the data-dir dance.
-local function bootstrap_data_dir()
+-- Blightmud (3.0 and later) reads servers.ron and settings.ron from
+-- this directory. Package versions before 0.2.2 also symlinked them
+-- into ~/.local/share/blightmud/data/, believing Blightmud read them
+-- there; it doesn't, and it warns "Can't migrate servers.ron" about
+-- those links on every start. Remove them, and only links that point
+-- back at this directory.
+local function remove_old_data_links()
   local home = os.getenv('HOME')
   local xdg_data = os.getenv('XDG_DATA_HOME')
-  local data_dir = (xdg_data and (xdg_data .. '/blightmud/data'))
-                or (home and (home .. '/.local/share/blightmud/data'))
-  if not data_dir then return end
-
-  os.execute('mkdir -p "' .. data_dir .. '"')
-
+  local data_dir = (xdg_data and (xdg_data .. '/blightmud/data')) or (home and (home .. '/.local/share/blightmud/data'))
+  if not data_dir then
+    return
+  end
   for _, name in ipairs({ 'servers.ron', 'settings.ron' }) do
-    local src = blight.config_dir() .. '/' .. name
-    local dst = data_dir .. '/' .. name
-
-    local f_src = io.open(src, 'r')
-    if f_src then
-      f_src:close()
-      local f_dst = io.open(dst, 'r')
-      if not f_dst then
-        os.execute(string.format('ln -sf "%s" "%s"', src, dst))
-        blight.output('[Icesus] Linked ' .. name
-          .. ' into Blightmud data dir. Restart Blightmud to use it.')
-      else
-        f_dst:close()
-      end
-    end
+    local link = data_dir .. '/' .. name
+    local target = blight.config_dir() .. '/' .. name
+    os.execute(string.format('[ -L "%s" ] && [ "$(readlink "%s")" = "%s" ] && rm -f "%s"', link, link, target, link))
   end
 end
 
-bootstrap_data_dir()
+remove_old_data_links()
 
 local session = {
   host = store.session_read('cur_host'),

@@ -9,7 +9,7 @@ end
 
 package.path = blight.config_dir() .. '/?.lua;' .. package.path
 
-ICESUS_VERSION = '0.2.1'
+ICESUS_VERSION = '0.2.2'
 
 C_WARN = C_BYELLOW
 C_CRIT = C_BRED

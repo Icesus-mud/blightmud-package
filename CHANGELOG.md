@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.2.2 — 2026-10-22
+
+- **No more "Can't migrate servers.ron" on every start.** `config.lua`
+  symlinked `servers.ron` and `settings.ron` into
+  `~/.local/share/blightmud/data/`, with a comment claiming Blightmud
+  5.x reads them there. It doesn't: Blightmud moved both files into
+  the config directory in 3.0
+  ([Blightmud#202](https://github.com/Blightmud/Blightmud/pull/202)),
+  reads them from beside `config.lua`, and warned about the links on
+  every start. The links are gone, and `config.lua` removes the ones
+  earlier versions made (only links that point back at the package).
+  Reported by Tenki.
+
 ## v0.2.1 — 2026-10-22
 
 - **`/icesus simple` and `/icesus full`** switch between the two-row
