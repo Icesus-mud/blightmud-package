@@ -1,5 +1,58 @@
 # Changelog
 
+## v0.2.0 — 2026-10-22
+
+Catches the package up with what the server has been sending since
+May, and with what the Mudlet package and the web client already
+show.
+
+- **Four status rows instead of two.** Location (room, area, `SAFE`,
+  `INN`, exits), action (momentum, casting or busy bar, cooldowns),
+  condition (enemies, afflictions, wounds, concealment, karma) and
+  vitals (pools, guild resources, exp, hour). Enemies moved from the
+  top row to the condition row and now carry their names when there
+  is room.
+- **Rows fit the terminal.** A row that is too wide is drawn in a
+  shorter form first, then cut from the right with `…`. Before, the
+  terminal wrapped it onto the line below.
+- **Exp progress was measuring the wrong thing.** It showed progress
+  to the next advancement point at every level. It now shows
+  progress to the next level, and switches to advancement points
+  (`AP`) at level 100, as the Mudlet package and the web client do.
+  Exp prints with thousands separators. A full bar reads `100%+`.
+- **Pools read `Hp 81%`** instead of `Hp:  81/100`, to make room for
+  the rest of the row.
+- **Momentum.** The action row shows momentum when it is up, and
+  `alt-m` / `alt-s` use whatever is lit in each lane, so the key is
+  never pressed blind. This replaces `f1 = use strike`, which sent
+  `use strike` whether or not there was a strike to use.
+- **Saved hotkeys on F1-F12.** The F-keys follow the hotkeys saved
+  on your character (`Client.Hotkeys`), the same set the web client
+  edits. Opt out with `Icesus.hotkeys.use_server = false`.
+- **Guild resources.** Fury and vitae from `Char.Vitals`, templar
+  bond strengths with a filling / draining arrow, and the active
+  charm from `Char.Resources` sit beside the pools. `/icesus guild`
+  prints bond load and drain, souls, charm abilities and devotion.
+- **Casting and busy.** A casting bar from `Char.Casting`, or the
+  activity you are busy with from `Char.Status`.
+- **Cooldowns** from `Char.Cooldowns`, counting down between the
+  server's updates.
+- **Afflictions, wounds, concealment, karma** from `Char.Status`:
+  `effects`, `wounds`, `stealth` and `karmas`.
+- **`/icesus`** lists your keys, the rows in use and the commands.
+- **Customising from `local.lua`.** `Icesus.rows`,
+  `Icesus.hotkeys.use_server`, `Icesus.bind_momentum()`; see the
+  README.
+- **Reconnecting no longer doubles the package up.** `config.lua`
+  loads the package on every connect, and each load added another
+  set of listeners, so after a reconnect every typed line echoed
+  twice. The package now loads once per session; `/reload` still
+  starts afresh. The status area clears on disconnect.
+- **`tools/fake_server.py`** plays GMCP fixtures to a local client
+  for trying changes without the game.
+- README: the GMCP spec is `help gmcp` in the game, not a server
+  path players cannot open.
+
 ## v0.1.0 — 2026-05-11
 
 Initial release. Built on top of [Tenki's `icesus-blightmud`

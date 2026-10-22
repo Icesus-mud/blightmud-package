@@ -19,7 +19,13 @@ ui_bind('end', 'step_to_end')
 ui_bind('\u{1b}oa', 'scroll_up')
 ui_bind('\u{1b}ob', 'scroll_down')
 
--- Normal binds
-blight.bind('f1', function()
-  mud.send('use strike')
-end)
+-- Momentum: alt-m uses whatever momentum is lit (strike, chase the
+-- rich vein, ...), alt-s the special one. The status row shows which
+-- key does what. To move one, call this again from local.lua, e.g.
+--   Icesus.bind_momentum('f12', 1)
+-- (and set Icesus.hotkeys.use_server = false if it is an F-key the
+-- server's hotkeys would otherwise take).
+Icesus.bind_momentum('alt-m', 1)
+Icesus.bind_momentum('alt-s', 2)
+
+-- F1-F12 follow the hotkeys saved on your character (see keys.lua).

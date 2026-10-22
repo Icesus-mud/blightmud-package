@@ -1,0 +1,8 @@
+[
+  {"delay_ms": 100, "package": "Client.Hotkeys", "payload": {"F1": "look", "F2": "score", "F3": "inventory", "F8": "help"}},
+  {"delay_ms": 50, "package": "Room.Info", "payload": {"name": "A narrow mining tunnel", "area": "Province", "id": "c0ffee00", "exits": {"west": "33cc44dd"}, "safe": 0, "inn": 0}},
+  {"delay_ms": 50, "package": "Char.Vitals", "payload": {"hp": 600, "mana": 100, "moves": 1150, "psp": 40, "maxhp": 3000, "maxmana": 2000, "maxmoves": 1200, "maxpsp": 50}},
+  {"delay_ms": 50, "package": "Char.Status", "payload": {"level": 100, "exp": 95000, "tnl": 0, "tna": 90000, "state": "idle", "pos": "standing", "casting": 0, "busy": 1, "activity": "mine", "effects": [], "karmas": [], "stealth": ["hiding in shadows", "invisible"], "wounds": [], "enemy": "", "enemypct": 0, "enemies": [], "momentum": "chase the rich vein", "momentum_source": "mining", "special_momentum": "", "money": 5000, "bank": 100, "dfavor": 2, "psp_on": 1}},
+  {"delay_ms": 50, "package": "Char.Casting", "payload": {"active": 0}},
+  {"delay_ms": 50, "package": "Char.Resources", "payload": {}}
+]
