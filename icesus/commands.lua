@@ -1,6 +1,8 @@
 -- Icesus commands.lua
 --
 --   /icesus         version, keys, and what the status rows show
+--   /icesus simple  two rows: enemies over pools and exp
+--   /icesus full    four rows: location, action, condition, vitals
 --   /icesus guild   bonds, souls, charm abilities and devotion
 local status = require('icesus.status')
 local keys = require('icesus.keys')
@@ -22,6 +24,10 @@ local function block(t, key)
     return b
   end
   return nil
+end
+
+local function capitalise(s)
+  return s:sub(1, 1):upper() .. s:sub(2)
 end
 
 local function num(n)
@@ -198,8 +204,15 @@ local function help()
   elseif not Icesus.hotkeys.use_server then
     out('  ' .. C_YELLOW .. 'Hotkeys' .. C_RESET .. '    ' .. C_BBLACK .. 'off (Icesus.hotkeys.use_server = false)')
   end
-  out('  ' .. C_YELLOW .. 'Rows' .. C_RESET .. '       ' .. table.concat(Icesus.rows, ', '))
-  out('  ' .. C_YELLOW .. 'Commands' .. C_RESET .. '   /icesus guild    bonds, souls, charm abilities, devotion')
+  local layout = Icesus.layout_name
+  local rows = table.concat(Icesus.rows, ', ')
+  if table.concat(Icesus.layouts[layout] or {}, ', ') ~= rows then
+    layout = 'your own'
+  end
+  out('  ' .. C_YELLOW .. 'Layout' .. C_RESET .. '     ' .. layout .. C_BBLACK .. ' (' .. rows .. ')')
+  out('  ' .. C_YELLOW .. 'Commands' .. C_RESET .. '   /icesus simple   two rows: enemies, then pools and exp')
+  out(INDENT .. '/icesus full     four rows: location, action, condition, vitals')
+  out(INDENT .. '/icesus guild    bonds, souls, charm abilities, devotion')
   out(INDENT .. '/reload          re-read the whole config after an edit')
 end
 
@@ -207,9 +220,13 @@ alias.add([=[^/icesus(?:\s+(\S+))?\s*$]=], function(matches)
   local sub = matches[2] or ''
   if sub == 'guild' then
     guild()
+  elseif Icesus.layouts[sub] then
+    Icesus.set_layout(sub)
+    out(C_GOOD .. '[Icesus] ' .. capitalise(sub) .. ' status layout. /icesus '
+      .. (sub == 'simple' and 'full' or 'simple') .. ' switches back.')
   elseif sub == '' or sub == 'help' then
     help()
   else
-    out(C_BRED .. '[Icesus] Unknown: /icesus ' .. sub .. '. Try /icesus or /icesus guild.')
+    out(C_BRED .. '[Icesus] Unknown: /icesus ' .. sub .. '. Try /icesus for the list.')
   end
 end)

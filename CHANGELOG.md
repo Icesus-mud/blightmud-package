@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.1 — 2026-10-22
+
+- **`/icesus simple` and `/icesus full`** switch between the two-row
+  status area of v0.1 (enemies over pools, exp and hour) and the
+  four-row one. Blightmud remembers the choice across sessions.
+  `/icesus` names the layout in use.
+- New `enemies` row (the fight alone) for building your own layout.
+
 ## v0.2.0 — 2026-10-22
 
 Catches the package up with what the server has been sending since

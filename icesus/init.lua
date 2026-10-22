@@ -9,7 +9,7 @@ end
 
 package.path = blight.config_dir() .. '/?.lua;' .. package.path
 
-ICESUS_VERSION = '0.2.0'
+ICESUS_VERSION = '0.2.1'
 
 C_WARN = C_BYELLOW
 C_CRIT = C_BRED
@@ -22,9 +22,15 @@ C_NOTGOOD = C_BMAGENTA
 Icesus = {
   loaded = true,
   version = ICESUS_VERSION,
-  -- Status rows, top to bottom. At most five; drop any you don't want.
-  -- 'location', 'action', 'condition', 'vitals'
-  rows = { 'location', 'action', 'condition', 'vitals' },
+  -- The two layouts /icesus full and /icesus simple switch between.
+  -- Row names: 'location', 'action', 'condition', 'enemies', 'vitals'.
+  layouts = {
+    full = { 'location', 'action', 'condition', 'vitals' },
+    simple = { 'enemies', 'vitals' },
+  },
+  -- Status rows in use, top to bottom, at most five. Set from the
+  -- layout last chosen below; set your own here from local.lua.
+  rows = nil,
   hotkeys = {
     -- Bind F1-F12 to the hotkeys saved on your character.
     use_server = true,
@@ -39,6 +45,23 @@ local keys = require('icesus.keys')
 function Icesus.layout()
   status:layout()
 end
+
+-- Switch to a named layout and remember it across sessions.
+function Icesus.set_layout(name)
+  local rows = Icesus.layouts[name]
+  if not rows then
+    return false
+  end
+  Icesus.layout_name = name
+  Icesus.rows = { table.unpack(rows) }
+  store.disk_write('icesus_layout', name)
+  status:layout()
+  return true
+end
+
+local saved = store.disk_read('icesus_layout')
+Icesus.layout_name = Icesus.layouts[saved or ''] and saved or 'full'
+Icesus.rows = { table.unpack(Icesus.layouts[Icesus.layout_name]) }
 
 -- Turn server hotkeys on or off after changing Icesus.hotkeys.use_server.
 Icesus.apply_hotkeys = keys.apply

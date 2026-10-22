@@ -41,6 +41,11 @@ the status area fill within a few seconds of connecting. Type
 
 ## What you get
 
+**Two layouts.** `/icesus full` (the default) gives the four rows
+below. `/icesus simple` goes back to the two rows of v0.1: enemies
+on top, pools, exp and the hour underneath. Blightmud remembers the
+choice across sessions.
+
 **Status area** (bottom four rows). Each row keeps the most useful
 things at its left. When the terminal is too narrow for a row, it
 switches to a shorter form first (bond initials, enemy names
@@ -85,7 +90,8 @@ dropped), then cuts from the right.
   nothing.
 
 **Commands**
-- `/icesus`: version, your keys, and the rows in use.
+- `/icesus`: version, your keys, and the layout in use.
+- `/icesus simple` / `/icesus full`: switch status layout.
 - `/icesus guild`: the rest of your guild resources. That covers
   bond load and drain, your souls (largest first), charm abilities,
   and your standing with the nine.
@@ -112,10 +118,12 @@ after the package, it is in `.gitignore`, and `git pull` leaves it
 alone. For example:
 
 ```lua
--- Fewer rows: pick any of 'location', 'action', 'condition',
--- 'vitals', in the order you want them (at most five).
-Icesus.rows = { 'condition', 'vitals' }
+-- Your own rows: pick any of 'location', 'action', 'condition',
+-- 'enemies', 'vitals', in the order you want them (at most five).
+Icesus.rows = { 'location', 'condition', 'vitals' }
 Icesus.layout()
+-- Or change what /icesus simple gives you.
+Icesus.layouts.simple = { 'condition', 'vitals' }
 
 -- Keep F1-F12 for your own binds instead of the saved hotkeys.
 -- Turn them off and apply before binding your own.
@@ -139,7 +147,7 @@ settings.ron           -- Blightmud client settings
 icesus/init.lua        -- entry point, settings, version banner, palette
 icesus/status.lua      -- GMCP → status rows
 icesus/keys.lua        -- saved hotkeys on F1-F12, momentum keys
-icesus/commands.lua    -- /icesus, /icesus guild
+icesus/commands.lua    -- /icesus, layouts, /icesus guild
 icesus/aliases.lua     -- deposit, dg
 icesus/lites.lua       -- stun-recovery highlight
 icesus/bindings.lua    -- home/end, mouse wheel, momentum keys

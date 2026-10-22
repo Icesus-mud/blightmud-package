@@ -4,11 +4,13 @@
 -- is kept as the server last sent it and replaced wholesale on arrival;
 -- every arrival redraws every row from that cached state.
 --
--- Rows, top to bottom by default (see Icesus.rows in init.lua):
+-- Rows, top to bottom in the full layout (see Icesus.layouts in
+-- init.lua):
 --   location   room name, area, SAFE / INN, exits
 --   action     momentum, casting or busy bar, cooldowns
 --   condition  enemies, afflictions, wounds, concealment, karma
 --   vitals     pools, guild resources, exp, in-game hour
+-- The simple layout is enemies (the fight alone) over vitals.
 --
 -- A row that does not fit the terminal is first drawn in a shorter
 -- form, then cut from the right with an ellipsis, so the things a
@@ -376,28 +378,40 @@ local function enemy_name(name)
   return cut(name, 16)
 end
 
+-- Every enemy as one segment: names and HP, or HP alone at level 1+.
+local function enemies_seg(self, level)
+  local enemies = list(self.status.enemies)
+  if #enemies == 0 then
+    return nil
+  end
+  local parts = seg('vs ', C_BBLACK)
+  for i, e in ipairs(enemies) do
+    local hp = tonumber(e.hp) or 0
+    if i > 1 then
+      parts[#parts + 1] = { level == 0 and ', ' or ' ', nil }
+    end
+    if level == 0 then
+      parts[#parts + 1] = { enemy_name(e.name) .. ' ', nil }
+    end
+    parts[#parts + 1] = { hp .. '%', colour_for_enemy_hp(hp) }
+  end
+  return parts
+end
+
+-- The simple layout's top row: the fight and nothing else.
+function rows.enemies(self, level)
+  if level > 1 then
+    return nil
+  end
+  return { enemies_seg(self, level) }
+end
+
 function rows.condition(self, level)
   if level > 2 then
     return nil
   end
   local s = self.status
-  local segs = {}
-
-  local enemies = list(s.enemies)
-  if #enemies > 0 then
-    local parts = seg('vs ', C_BBLACK)
-    for i, e in ipairs(enemies) do
-      local hp = tonumber(e.hp) or 0
-      if i > 1 then
-        parts[#parts + 1] = { level == 0 and ', ' or ' ', nil }
-      end
-      if level == 0 then
-        parts[#parts + 1] = { enemy_name(e.name) .. ' ', nil }
-      end
-      parts[#parts + 1] = { hp .. '%', colour_for_enemy_hp(hp) }
-    end
-    segs[#segs + 1] = parts
-  end
+  local segs = { enemies_seg(self, level) }
 
   local wounds = list(s.wounds)
   for _, fx in ipairs(list(s.effects)) do
